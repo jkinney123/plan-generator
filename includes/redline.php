@@ -26,11 +26,11 @@ function cpp_dmp_word_diff($old, $new)
         list($op, $data) = $part;
         $data = str_replace("\t", '', $data); // reassemble word chunks
         if ($op === $dmp::DIFF_INSERT) {
-            $html .= '<ins style="background:#eaffea;">' . htmlspecialchars($data) . '</ins>';
+            $html .= '<ins style="background:#eaffea;">' . $data . '</ins>';
         } elseif ($op === $dmp::DIFF_DELETE) {
-            $html .= '<del style="background:#ffecec;">' . htmlspecialchars($data) . '</del>';
+            $html .= '<del style="background:#ffecec;">' . $data . '</del>';
         } else {
-            $html .= htmlspecialchars($data);
+            $html .= $data;
         }
     }
     return $html;
@@ -46,18 +46,24 @@ function cpp_redline_template_regions_dmp($old_html, $new_html)
     $xpath_old = new DOMXPath($old_doc);
     $xpath_new = new DOMXPath($new_doc);
 
-    // Build associative array of old blocks by key
+    // Build associative array of old blocks by key, using inner HTML
     $old_spans = [];
     foreach ($xpath_old->query('//span[contains(@class,"cpp-template")]') as $span) {
         $key = $span->getAttribute('data-key');
-        $old_spans[$key] = $span->nodeValue;
+        $old_spans[$key] = '';
+        foreach ($span->childNodes as $child) {
+            $old_spans[$key] .= $old_doc->saveHTML($child);
+        }
     }
 
-    // Replace new spans with redline diffs
+    // Replace new spans with redline diffs (using inner HTML)
     foreach ($xpath_new->query('//span[contains(@class,"cpp-template")]') as $span) {
         $key = $span->getAttribute('data-key');
         $old = isset($old_spans[$key]) ? $old_spans[$key] : '';
-        $new = $span->nodeValue;
+        $new = '';
+        foreach ($span->childNodes as $child) {
+            $new .= $new_doc->saveHTML($child);
+        }
 
         // Generate word-level diff using your cpp_dmp_word_diff function
         $diff = cpp_dmp_word_diff($old, $new);

@@ -324,14 +324,34 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
         }';
     } else {
         $preview_css = '
-        .pdf-preview-wrapper {
+       .pdf-preview-wrapper {
             background: none;
             box-shadow: none;
             padding: 0;
             margin: 0;
             max-width: none;
             min-width: 0;
-        }';
+        }
+        /* More open, readable list style for PDF output */
+        .pdf-preview-wrapper ol li,
+        .pdf-preview-wrapper ul li {
+            margin-bottom: 8pt;
+            margin-top: 0;
+            padding-left: 0;
+            line-height: 1.35;
+        }
+       .pdf-preview-wrapper ol,
+.pdf-preview-wrapper ul {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 18pt;
+    line-height: 1.15;
+}
+    .pdf-preview-wrapper hr {
+    display: block;
+    margin-top: 18pt !important;
+    margin-bottom: 0 !important;
+}';
     }
 
     $html = '
@@ -345,6 +365,21 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
         color: #000;
         text-align: justify;
     }
+    .pdf-preview-wrapper, .pdf-preview-wrapper * {
+    box-sizing: border-box;
+}
+.pdf-preview-wrapper ol, .pdf-preview-wrapper ul {
+        margin-top: 10pt;
+        margin-bottom: 10pt;
+        padding-left: 18pt;
+        line-height: 1.25;
+    }
+    .pdf-preview-wrapper ol li, .pdf-preview-wrapper ul li {
+        margin-bottom: 6pt;
+        margin-top: 6pt;
+        padding-left: 0;
+    }
+
 
     /* Article Headers - positioned near top with minimal margin */
     .pdf-preview-wrapper h1 {
@@ -353,7 +388,7 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
         font-weight: bold;
         text-align: center;
         text-decoration: underline;
-        margin: 12pt 0 18pt 0;
+        margin-bottom: 18pt;
         text-transform: uppercase;
         letter-spacing: 0.5pt;
         page-break-inside: avoid;
@@ -410,6 +445,8 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
     }
 
     .pdf-preview-wrapper ol li {
+
+    padding-bottom: 0pt !important;
         margin: 0 0 1pt 0;
         padding-left: 3pt;
         text-align: justify;
@@ -636,10 +673,12 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
             tempContainer.innerHTML = mainContentHtml;
             document.body.appendChild(tempContainer);
 
-            const pageHeight = 1056;
-            const padding = 144; // 72pt top + 72pt bottom in pixels
-            const pageNumberHeight = 50; // Space for page number
-            const availableHeight = pageHeight - padding - pageNumberHeight; // About 862px
+           const pageHeight = 1056;
+const padding = 144; // 72pt top + 72pt bottom in pixels
+const pageNumberHeight = 30; // Space for page number
+const fudgeFactor = -10;
+const availableHeight = pageHeight - padding - pageNumberHeight - fudgeFactor;
+
 
             let currentPage = 2; // Start from page 2 since intro is page 1
             let pages = [];
