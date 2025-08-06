@@ -335,15 +335,15 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
         /* More open, readable list style for PDF output */
         .pdf-preview-wrapper ol li,
         .pdf-preview-wrapper ul li {
-            margin-bottom: 8pt;
+            margin-bottom: 6pt;
             margin-top: 0;
             padding-left: 0;
-            line-height: 1.35;
+            line-height: 1.15;
         }
        .pdf-preview-wrapper ol,
 .pdf-preview-wrapper ul {
-    margin-top: 0;
-    margin-bottom: 0;
+    margin-top: 6pt;
+    margin-bottom: 6pt;
     padding-left: 18pt;
     line-height: 1.15;
 }
@@ -369,14 +369,14 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
     box-sizing: border-box;
 }
 .pdf-preview-wrapper ol, .pdf-preview-wrapper ul {
-        margin-top: 10pt;
-        margin-bottom: 10pt;
+        margin-top: 6pt;
+        margin-bottom: 6pt;
         padding-left: 18pt;
-        line-height: 1.25;
+        line-height: 1.15;
     }
     .pdf-preview-wrapper ol li, .pdf-preview-wrapper ul li {
         margin-bottom: 6pt;
-        margin-top: 6pt;
+        margin-top: 0;
         padding-left: 0;
     }
 
@@ -438,16 +438,15 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
 
     /* Numbered Lists - Match PDF exactly */
     .pdf-preview-wrapper ol {
-        margin: 2pt 0;
+        margin: 6pt 0;
         padding-left: 18pt;
         list-style-type: decimal;
         page-break-inside: auto;
     }
 
     .pdf-preview-wrapper ol li {
-
-    padding-bottom: 0pt !important;
-        margin: 0 0 1pt 0;
+        padding-bottom: 0pt !important;
+        margin: 0 0 6pt 0;
         padding-left: 3pt;
         text-align: justify;
         page-break-inside: avoid;
@@ -460,13 +459,13 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
 
     /* Bulleted Lists - Match PDF exactly */
     .pdf-preview-wrapper ul {
-        margin: 2pt 0;
+        margin: 6pt 0;
         padding-left: 18pt;
         list-style-type: disc;
     }
 
     .pdf-preview-wrapper ul li {
-        margin: 0 0 1pt 0;
+        margin: 0 0 6pt 0;
         padding-left: 2pt;
         text-align: justify;
         line-height: 1.15;
@@ -528,7 +527,7 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
     .pdf-preview-wrapper .footer-area { 
         margin-top: 40pt; 
         text-align: center; 
-        font-size: 11pt; 
+        font-size: 10pt; 
         color: #333; 
     }
 
@@ -547,6 +546,15 @@ function cpp_build_full_doc_html($plan_id, $template_data, $version, $redline = 
         font-weight: bold;
         margin-right: 12pt;
     }
+    .pdf-preview-wrapper .pdf-preview-content:not(.intro-page) > *:first-child > h1:first-child,
+    .pdf-preview-wrapper .pdf-preview-content:not(.intro-page) > *:first-child > h2:first-child,
+    .pdf-preview-wrapper .pdf-preview-content:not(.intro-page) > *:first-child > h3:first-child,
+    .pdf-preview-wrapper .pdf-preview-content:not(.intro-page) > *:first-child > p:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+}
+    
+
     </style>
     ';
 
@@ -890,11 +898,15 @@ const availableHeight = pageHeight - padding - pageNumberHeight - fudgeFactor;
                 $html .= cpp_redline_template_regions_dmp($old, $new);
             }
         }
-
         $html .= '<p style="text-align:right; font-size:10pt;"><em>Template Version: ' . esc_html($version) . '</em></p>';
-        $html .= '<div class="footer-area"><p>&copy; ' . date('Y') . '  Kinney Law & Compliance. All rights reserved.</p></div>';
+        // Footer with large top margin to push it to bottom of last page
+        $html .= '<div class="footer-area" style="margin-top:120pt !important; text-align:center; font-size:10pt; color:#333;">
+            &copy; ' . date('Y') . '  Kinney Law & Compliance. All rights reserved.
+        </div>';
 
         $html .= '</div>'; // Close pdf-preview-wrapper
+
+
     }
     // Always replace tokens last
     $html = cpp_replace_tokens($html, $plan_id);

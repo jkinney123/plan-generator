@@ -1,3 +1,73 @@
+/* Sectional Redline Card Layout & Navigation */
+.cpp-sectional-redlines {
+    margin-top: 24px;
+}
+
+.cpp-redline-nav {
+    position: sticky;
+    top: 20px;
+    background: #f5f8fa;
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.04);
+    z-index: 10;
+}
+
+.cpp-redline-nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cpp-redline-nav li {
+    margin-bottom: 10px;
+}
+
+.cpp-redline-nav a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1.08em;
+}
+
+.cpp-redline-nav a:hover {
+    text-decoration: underline;
+}
+
+.cpp-redline-section-card {
+    background: #fff;
+    border: 1.5px solid #e0e4ea;
+    border-radius: 8px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.06);
+    padding: 24px 28px 18px 28px;
+    position: relative;
+}
+
+.cpp-redline-section-header {
+    font-size: 1.15em;
+    font-weight: 600;
+    background: #f5f8fa;
+    border-left: 4px solid #3498db;
+    padding: 10px 16px;
+    margin: -24px -28px 18px -28px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cpp-section-icon {
+    font-size: 1.3em;
+}
+
+.cpp-redline-divider {
+    border: none;
+    border-top: 2.5px dashed #b2becd;
+    margin: 36px 0;
+}
+
 /* Tooltip Styles */
 .cpp-tooltip-trigger {
     position: relative;
@@ -25,7 +95,7 @@
     max-width: 600px;
     width: max-content;
     z-index: 1000;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
 }
 
 .cpp-tooltip-trigger:hover::before {
@@ -57,7 +127,7 @@
     max-width: 350px;
     width: max-content;
     z-index: 1000;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
     word-wrap: break-word;
 }
 
@@ -124,6 +194,7 @@
         opacity: 0;
         transform: translateY(-10px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

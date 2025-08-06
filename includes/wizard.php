@@ -791,8 +791,10 @@ function cpp_render_upgrade_flow($atts = [])
     $claims_administrator = get_post_meta($plan_id, '_cpp_claims_administrator', true);
     $claims_administrator_address = get_post_meta($plan_id, '_cpp_claims_administrator_address', true);
 
-    // Build diff for each plan option
+    // Build diff for each plan option, with section titles for navigation
     $redlines = [];
+    $section_titles = [];
+    $section_idx = 1;
     foreach ($plan_options as $opt) {
         $old = isset($all_versions[$current_version]['components'][$opt]) ? $all_versions[$current_version]['components'][$opt] : '';
         $new = isset($all_versions[$latest_version]['components'][$opt]) ? $all_versions[$latest_version]['components'][$opt] : '';
@@ -802,7 +804,16 @@ function cpp_render_upgrade_flow($atts = [])
         $new = str_replace(['{{employer}}', '{{restatement_effective_date}}', '{{employer_address}}', '{{claims_administrator}}', '{{claims_administrator_address}}'], [$employer, $restatement_effective_date, $employer_address, $claims_administrator, $claims_administrator_address], $new);
 
         // Use redline template regions function for better formatting
-        $redlines[$opt] = cpp_redline_template_regions_dmp($old, $new);
+        $redlines[$opt] = [
+            'id' => 'cpp-section-' . $section_idx,
+            'title' => $opt,
+            'html' => cpp_redline_template_regions_dmp($old, $new),
+        ];
+        $section_titles[] = [
+            'id' => 'cpp-section-' . $section_idx,
+            'title' => $opt,
+        ];
+        $section_idx++;
     }
 
     // Handle form POST (adoption)
@@ -994,15 +1005,28 @@ function cpp_render_upgrade_flow($atts = [])
                 <p style="font-size: 0.9em; color: #5a6c7d; margin: 0; font-family: 'Literata', serif;">Review the specific
                     changes made to each section of your plan:</p>
             </div>
-            <?php foreach ($redlines as $section => $diff_html): ?>
-                <div style="margin-bottom: 32px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
-                    <div class="cpp-redline-section"
-                        style="padding: 20px; background: #fff; line-height: 1.6; font-family: 'Literata', serif;">
-                        <?php echo $diff_html; ?>
+            <!-- Sectional Redline Navigation -->
+            <nav class="cpp-redline-nav">
+                <ul>
+                    <?php foreach ($section_titles as $section): ?>
+                        <li><a href="#<?php echo esc_attr($section['id']); ?>"><?php echo esc_html($section['title']); ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            </nav>
+            <div class="cpp-sectional-redlines">
+                <?php foreach ($redlines as $section): ?>
+                    <div class="cpp-redline-section-card" id="<?php echo esc_attr($section['id']); ?>">
+                        <div class="cpp-redline-section-header">
+                            <span class="cpp-section-icon">📝</span>
+                            <span><?php echo esc_html($section['title']); ?></span>
+                        </div>
+                        <div class="cpp-redline-section-content cpp-redline-section">
+                            <?php echo $section['html']; ?>
+                        </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-
+                    <hr class="cpp-redline-divider" />
+                <?php endforeach; ?>
+            </div>
             <form method="post" style="margin-top:32px; text-align: center;">
                 <input type="hidden" name="plan_id" value="<?php echo esc_attr($plan_id); ?>" />
                 <input type="hidden" name="upgrade_step" value="2" />
